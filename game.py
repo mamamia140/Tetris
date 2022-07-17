@@ -1,7 +1,16 @@
-from tkinter import CENTER
 import pygame
 import sys
 import numpy as np
+import os
+
+def resource_path(relative_path):
+    try:
+    # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 BLUE = (0,0,255)
 BLACK = (0,0,0)
@@ -13,14 +22,14 @@ clock = pygame.time.Clock()
 pygame.init()
 size = (900, 650)
 screen = pygame.display.set_mode(size)
-pygame.mixer.music.load("assets/music.mp3")
+pygame.mixer.music.load(resource_path('assets/music.mp3'))
 pygame.mixer.music.play(-1)
 GRAVITY, t= pygame.USEREVENT+1, 350
 pygame.time.set_timer(GRAVITY, t)
-boardImage = pygame.image.load("assets/boardTemplate.png")
-background = pygame.image.load("assets/background.png")
-arcadeFont = pygame.font.Font("assets/ARCADECLASSIC.TTF",30)
-arcadeFont2 = pygame.font.Font("assets/ARCADECLASSIC.TTF",80)
+boardImage = pygame.image.load(resource_path('assets/boardTemplate.png'))
+background = pygame.image.load(resource_path('assets/background.png'))
+arcadeFont = pygame.font.Font(resource_path('assets/ARCADECLASSIC.TTF'),30)
+arcadeFont2 = pygame.font.Font(resource_path('assets/ARCADECLASSIC.TTF'),80)
 scoreTitle = arcadeFont.render("Score",True, (255,255,255))
 NextTitle = arcadeFont.render("Next",True, (255,255,255))
 GameOver = arcadeFont2.render("Game Over",True, (255,0,0))
@@ -32,13 +41,13 @@ figures = [ [1,3,5,7],
             [3,5,7,6],
             [2,3,4,5] ]
 blockColors = [YELLOW,
-    pygame.image.load("assets/mavi.png"),
-    pygame.image.load("assets/sari.png"),
-    pygame.image.load("assets/turuncu.png"),
-    pygame.image.load("assets/yesil.png"),
-    pygame.image.load("assets/pembe.png"),
-    pygame.image.load("assets/mor.png"),
-    pygame.image.load("assets/kirmizi.png")
+    pygame.image.load(resource_path('assets/mavi.png')),
+    pygame.image.load(resource_path('assets/sari.png')),
+    pygame.image.load(resource_path('assets/turuncu.png')),
+    pygame.image.load(resource_path('assets/yesil.png')),
+    pygame.image.load(resource_path('assets/pembe.png')),
+    pygame.image.load(resource_path('assets/mor.png')),
+    pygame.image.load(resource_path('assets/kirmizi.png'))
 ]
 def newBlock(block):
     blockposx = np.array([],dtype=int)
@@ -199,7 +208,7 @@ def main():
     pygame.mixer.music.stop()
     screen.blit(GameOver, (265,280))
     pygame.display.update()
-    pygame.time.wait(2000)
+    pygame.time.wait(3000)
 
 if __name__ == "__main__":
     main()
