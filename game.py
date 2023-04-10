@@ -24,8 +24,10 @@ size = (900, 650)
 screen = pygame.display.set_mode(size)
 pygame.mixer.music.load(resource_path('assets/music.mp3'))
 pygame.mixer.music.play(-1)
-GRAVITY, t= pygame.USEREVENT+1, 350
+GRAVITY, t= pygame.USEREVENT + 1, 800
+TICK, t2= pygame.USEREVENT + 2, 100
 pygame.time.set_timer(GRAVITY, t)
+pygame.time.set_timer(TICK, t2)
 boardImage = pygame.image.load(resource_path('assets/boardTemplate.png'))
 background = pygame.image.load(resource_path('assets/background.png'))
 arcadeFont = pygame.font.Font(resource_path('assets/ARCADECLASSIC.TTF'),30)
@@ -144,7 +146,7 @@ def main():
         screen.blit(NextTitle, (660,115))
         for i in range(len(nextblockposx)):
             screen.blit(blockColors[nextColorNum],(710+(nextblockposx[i] - 4)*30,160+nextblockposy[i]*30))
-        #pygame.draw.rect(screen, WHITE, (75,15, 150, 300))
+        
         printTheBoard(gameBoard)
         gameBoard,tempScore = isFilled(gameBoard)
         if(tempScore != 0):
@@ -152,17 +154,18 @@ def main():
         for i in range(len(blockposx)):
             screen.blit(blockColors[colorNum],(300+blockposx[i]*30,25+blockposy[i]*30))
         
+        key_input = pygame.key.get_pressed() 
         for event in pygame.event.get():
-            key_input = pygame.key.get_pressed() 
             if event.type == pygame.QUIT:
-                sys.exit()             
-            if key_input[pygame.K_LEFT]:
+                sys.exit()
+
+            if key_input[pygame.K_LEFT] and event.type == TICK:
                 tempx = np.empty_like(blockposx)
                 tempx[:] = blockposx
                 blockposx -= 1
                 if(check(gameBoard,(blockposx,blockposy))==0):
                     blockposx[:] = tempx
-            if key_input[pygame.K_UP]:
+            if key_input[pygame.K_UP] and event.type == TICK:
                 tempx = np.empty_like(blockposx)
                 tempx[:] = blockposx
                 tempy = np.empty_like(blockposy)
@@ -171,18 +174,13 @@ def main():
                 if(check(gameBoard,(blockposx,blockposy))==0):
                     blockposx[:] = tempx
                     blockposy[:] = tempy
-            if key_input[pygame.K_RIGHT]:
+            if key_input[pygame.K_RIGHT] and event.type == TICK:
                 tempx = np.empty_like(blockposx)
                 tempx[:] = blockposx
                 blockposx += 1
                 if(check(gameBoard,(blockposx,blockposy))==0):
                     blockposx[:] = tempx
-            if key_input[pygame.K_DOWN]:
-                tempy = np.empty_like(blockposy)
-                tempy[:] = blockposy
-                blockposy += 1
-                if(check(gameBoard,(blockposx,blockposy))==0):
-                    blockposy[:] = tempy
+                    
             if event.type == GRAVITY: # is called every 't' milliseconds
                 tempy = np.empty_like(blockposy)
                 tempy[:] = blockposy
@@ -200,6 +198,14 @@ def main():
                     while(check(gameBoard, (blockposx,blockposy))==0 and not gameOver):
                         blockposy -= 1
                         gameOver = checkForGameOver(blockposy)
+
+        if key_input[pygame.K_DOWN]:
+            tempy = np.empty_like(blockposy)
+            tempy[:] = blockposy
+            blockposy += 1
+            if(check(gameBoard,(blockposx,blockposy))==0):
+                blockposy[:] = tempy
+                pygame.display.update()
             
         gameOver = checkForGameOver(blockposy)
         pygame.display.update()
